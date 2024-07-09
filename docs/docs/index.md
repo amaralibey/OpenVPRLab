@@ -1,6 +1,6 @@
 ![1720554717300](image/index/1720554717300.png)
-# OpenVPRLab
 
+# OpenVPRLab
 
 **OpenVPRLab** is a comprehensive open-source framework for visual place recognition (VPR). It is designed to accelerate the training and iterative development of deep models for VPR, making it easier for researchers and developers to achieve state-of-the-art performance.
 
@@ -15,4 +15,3 @@
 * Track your experiments with integrated Tensorboard support
 * Visualize your model performance (showing hard retrievals, missed retrievals)
 * Develop your own aggregator, your own backbone, or loss function
-*

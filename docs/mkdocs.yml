@@ -10,7 +10,7 @@ nav:
 theme:
   language: en
   name: material
-  # logo: assets/globe.png
+  logo: assets/images/globe.png
   palette:
 
     # Palette toggle for automatic mode

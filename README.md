@@ -14,5 +14,4 @@
 * **Extensive Loss Functions** : Leverage dozens of loss functions from the deep metric learning community through the integrated `deep_metric_learning` library, enabling advanced model optimization and experimentation.
 * Track your experiments with integrated Tensorboard support
 * Visualize your model performance (showing hard retrievals, missed retrievals)
-* Develop your own aggregator, your own backbone, or loss function
-*
+* Develop your own aggregator, backbone, or loss function

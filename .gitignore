@@ -15,6 +15,7 @@ notebooks/.ipynb_checkpoints
 !/data/valid/
 !/data/test/
 
+/docs/*
 # Logs
 /logs/*
 
