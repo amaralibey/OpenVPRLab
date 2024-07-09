@@ -1,0 +1,25 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+
+# Jupyter Notebook
+.ipynb_checkpoints
+notebooks/.ipynb_checkpoints
+
+# Ignore everything in data folder except specific subdirectories
+/data/*
+!/data/
+!/data/train/
+!/data/valid/
+!/data/test/
+
+# Logs
+/logs/*
+
+# VS Code
+.vscode/
+
+# Cache files
+.cache/

@@ -1,0 +1,11 @@
+####################
+##### DATASETS #####
+####################
+datasets_paths:
+  train:
+    gsv_cities: /home/YOUR_DIR/datasets/gsv_cities/
+  validation:
+    msls_val: /run/media/amar/Storage/msls_val
+    # pitts30k_val: 
+    # nordland:
+    # sped:
