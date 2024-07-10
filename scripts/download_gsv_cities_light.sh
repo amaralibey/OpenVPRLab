@@ -12,9 +12,9 @@ SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Set the dataset name and download path
-DATASET_NAME="pitts30k-val"
-DOWNLOAD_URL="https://github.com/amaralibey/OpenVPRLab/releases/download/v0.1/pitts30k-val.zip"
-DESTINATION_PATH="$PROJECT_ROOT/data/val"
+DATASET_NAME="gsv-cities-light"
+DOWNLOAD_URL="https://github.com/amaralibey/OpenVPRLab/releases/download/v0.1/gsv-cities-light.zip"
+DESTINATION_PATH="$PROJECT_ROOT/data/train"
 
 # Make sure the DESTINATION_PATH already exists
 if ! [ -d "$DESTINATION_PATH" ]; then
