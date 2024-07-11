@@ -1,11 +1,7 @@
-####################
-##### DATASETS #####
-####################
-datasets_paths:
+datasets:
   train:
-    gsv_cities: /home/YOUR_DIR/datasets/gsv_cities/
-  validation:
-    msls_val: /run/media/amar/Storage/msls_val
-    # pitts30k_val: 
-    # nordland:
-    # sped:
+    gsv-cities: /home/amar/work/OpenVPRLab/train/gsv-cities
+    gsv-cities-light: /home/amar/work/OpenVPRLab/train/gsv-cities-light
+  val:
+    msls-val: /home/amar/work/OpenVPRLab/val/msls-val
+    pitts30k-val: /home/amar/work/OpenVPRLab/val/pitts30k-val

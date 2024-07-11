@@ -1,6 +1,9 @@
-# © 2024 Amar Ali-bey. All rights reserved.
-# Licensed under the MIT License. See LICENSE file in the project root for full license information.
-# GitHub Repository: https://github.com/amaralibey/OpenVPRLab
+# ----------------------------------------------------------------------------
+# Copyright (c) 2024 Amar Ali-bey
+# 
+# This code is part of OpenVPRLab: https://github.com/amaralibey/OpenVPRLab
+# Licensed under the MIT License. See LICENSE file in the project root.
+# ----------------------------------------------------------------------------
 
 import torch
 import lightning as L

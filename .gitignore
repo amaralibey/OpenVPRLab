@@ -9,7 +9,8 @@ __pycache__/
 notebooks/.ipynb_checkpoints
 
 # Ignore everything in data folder except specific subdirectories
-/data/*
+/data/train/*
+/data/val/*
 
 /docs/*
 
@@ -21,3 +22,6 @@ notebooks/.ipynb_checkpoints
 
 # Cache files
 .cache/
+
+
+copyrigth.txt

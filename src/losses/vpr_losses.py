@@ -2,7 +2,7 @@
 # We instantiate a loss and perform online mining
 # we will use pytorch_metric_learning library for this
 # we can also develop our own loss function
-# and online mining process and call then here
+# and online mining process and call them here
 
 from typing import Optional, Callable, Tuple, Any
 import torch
