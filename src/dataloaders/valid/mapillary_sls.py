@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 import numpy as np
 from PIL import Image
 
-from src.utils.config_manager import ConfigManager
+from src.utils import config_manager
 
 class MapillarySLSDataset(Dataset):
     """
@@ -32,7 +32,7 @@ class MapillarySLSDataset(Dataset):
         self.input_transform = input_transform
 
         if dataset_path is None: # use path in config.yaml
-            dataset_path = ConfigManager.get_dataset_paths_by_type("validation")["msls_val"]
+            dataset_path = config_manager.get_dataset_path(dataset_name="msls-val", dataset_type="val")
         else:
             dataset_path = Path(dataset_path)
             if not dataset_path.is_dir():

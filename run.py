@@ -70,20 +70,21 @@ def main():
     parser.add_argument('--compile', action='store_true', help='Compile the model using torch.compile()')
     args = parser.parse_args()
 
-    # for l in [0.0001, 0.001, 0.01]:
     # define a data module
     datamodule = VPRDataModule(
+        train_set_name="gsv-cities-light",
+        # cities=TRAIN_CITIES,
+        cities=None,
+        train_image_size=(320, 320),
         batch_size=args.batch_size,
         img_per_place=4,
         random_sample_from_each_place=True,
         shuffle_all=False,
-        image_size=(320, 320),
         num_workers=args.num_workers,
         batch_sampler=None,
-        cities=TRAIN_CITIES,
         mean_std=IMAGENET_MEAN_STD,
         val_set_names=[
-            "msls_val", 
+            "msls-val", 
         ],
         print_data_stats=True,
     )

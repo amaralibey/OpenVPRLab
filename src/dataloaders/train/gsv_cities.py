@@ -28,14 +28,15 @@ from PIL import Image
 import torch
 from torch.utils.data import Dataset
 import torchvision.transforms as T
-from src.utils.config_manager import ConfigManager
+
+from src.utils import config_manager
 
 
 
 # First, check if the dataset is downloaded and the path put in the config.yaml file
-available_train_datasets = ConfigManager.get_dataset_paths_by_type("train")
+# available_train_datasets = ConfigManager.get_dataset_paths_by_type("train")
 
-assert "gsv_cities" in available_train_datasets, "GSV-Cities dataset not found in the configuration file. Please check `config.yaml` file."
+# assert "gsv_cities" in available_train_datasets, "GSV-Cities dataset not found in the configuration file. Please check `config.yaml` file."
 
 # Transforms are passed to the dataset, if not, we will use this standard transform
 default_transform = T.Compose([
@@ -46,24 +47,45 @@ default_transform = T.Compose([
 # Now we can define the dataset class
 class GSVCitiesDataset(Dataset):
     def __init__(self,
-                 cities=['London', 'Boston'],
+                 dataset_path=None,
+                 cities="all", # or None
                  img_per_place=4,
                  random_sample_from_each_place=True,
                  transform=default_transform,
-                 base_path=available_train_datasets['gsv_cities'],
                  hard_mining=False,
                  ):
         """
         Args:
-            cities (list): List of city names to use in the dataset.
+            cities (list): List of city names to use in the dataset. Default is "all" or None which uses all cities.
             base_path (Path): Base path for the dataset files.
             img_per_place (int): The number of images per place.
             random_sample_from_each_place (bool): Whether to sample images randomly from each place.
             transform (callable): Optional transform to apply on images.
             hard_mining (bool): Whether you are performing hard negative mining or not.
         """
-        super(GSVCitiesDataset, self).__init__()
-        self.base_path = Path(base_path)
+        super().__init__()
+        
+        # check if the dataset path is provided, if not, use the one in the config.yaml file
+        if dataset_path is None:
+            print("No dataset path provided. Using `gsv-cities-light`. We will try to load the one in the config.yaml file.")
+            dataset_path = config_manager.get_dataset_path(
+                dataset_name="gsv-cities-light", 
+                dataset_type="train")
+        else:
+            dataset_path = Path(dataset_path)
+            if not dataset_path.exists():
+                raise FileNotFoundError(f"Dataset path {dataset_path} does not exist. Please check the path.")
+            
+        self.base_path = Path(dataset_path)
+        
+        # let's check if the cities are valid
+        if cities == "all" or cities is None:
+            cities = [f.name[:-4] for f in self.base_path.glob("Dataframes/*.csv")]
+        else:
+            for city in cities:
+                if not (self.base_path / 'Dataframes' / f'{city}.csv').exists():
+                    raise FileNotFoundError(f"Dataframe for city {city} not found. Please check the city name.")
+        
         self.cities = cities
         self.img_per_place = img_per_place
         self.random_sample_from_each_place = random_sample_from_each_place

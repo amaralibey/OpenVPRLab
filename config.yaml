@@ -1,7 +1,7 @@
 datasets:
   train:
-    gsv-cities: /home/amar/work/OpenVPRLab/train/gsv-cities
-    gsv-cities-light: /home/amar/work/OpenVPRLab/train/gsv-cities-light
+    gsv-cities: /home/amar/work/OpenVPRLab/data/train/gsv-cities
+    gsv-cities-light: /home/amar/work/OpenVPRLab/data/train/gsv-cities-light
   val:
-    msls-val: /home/amar/work/OpenVPRLab/val/msls-val
-    pitts30k-val: /home/amar/work/OpenVPRLab/val/pitts30k-val
+    msls-val: /home/amar/work/OpenVPRLab/data/val/msls-val
+    pitts30k-val: /home/amar/work/OpenVPRLab/data/val/pitts30k-val

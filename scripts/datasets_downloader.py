@@ -18,6 +18,7 @@ from rich.table import Table
 from rich import box
 import yaml
 
+
 # Dictionary mapping dataset names to their corresponding script filenames, sizes and type
 AVAILABLE_DATASETS: Dict[str, Tuple[str, str, str]] = {
     "gsv-cities":       ("download_gsv_cities.sh",          "23.4 GB",  "train"),
@@ -95,7 +96,7 @@ def execute_script(script_path: str, dataset_name: str, dataset_type: str) -> No
             console.print(result.stdout)
 
         # downloaded datasets are stored in the folder data/ in the project root
-        dataset_path = Path(__file__).parent.parent / dataset_type / dataset_name
+        dataset_path = Path(__file__).parent.parent / "data" / dataset_type / dataset_name
         update_config_yaml(dataset_name, dataset_type, dataset_path)
         
     except subprocess.CalledProcessError as e:
