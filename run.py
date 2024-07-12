@@ -85,6 +85,7 @@ def main():
         mean_std=IMAGENET_MEAN_STD,
         val_set_names=[
             "msls-val", 
+            "pitts30k-val",
         ],
         print_data_stats=True,
     )
@@ -150,9 +151,8 @@ def main():
     
     
     checkpoint_cb = ModelCheckpoint(
-        monitor="msls_val/R1",
-        filename=f"{backbone.backbone_name}"
-        + "_epoch({epoch:02d})_step({step:04d})_R1[{msls_val/R1:.4f}]_R5[{msls_val/R5:.4f}]",
+        monitor="msls-val/R1",
+        filename="epoch({epoch:02d})_step({step:04d})_R1[{msls-val/R1:.4f}]_R5[{msls-val/R5:.4f}]",
         auto_insert_metric_name=False,
         save_weights_only=False,
         save_top_k=3,
@@ -174,34 +174,34 @@ def main():
     # )
     
     # blue-ish
-    # progress_bar_cb = RichProgressBar(
-    #     leave=False,
-    #     theme=RichProgressBarTheme(
-    #         description="bright_magenta",
-    #         progress_bar="bright_blue",
-    #         progress_bar_finished="bright_green",
-    #         progress_bar_pulse="bright_yellow",
-    #         batch_progress="bright_red",
-    #         time="bright_cyan",
-    #         processing_speed="bright_white",
-    #         metrics="bright_magenta",
-    #     ),
-    # )
-    
-    # green-ish
     progress_bar_cb = RichProgressBar(
         leave=False,
         theme=RichProgressBarTheme(
-            description="bright_blue",
-            progress_bar="cyan",
-            progress_bar_finished="bright_cyan",
-            progress_bar_pulse="magenta",
-            batch_progress="bright_green",
-            time="bright_white",
+            description="bright_magenta",
+            progress_bar="bright_blue",
+            progress_bar_finished="bright_green",
+            progress_bar_pulse="bright_yellow",
+            batch_progress="bright_red",
+            time="bright_cyan",
             processing_speed="bright_white",
-            metrics="bright_yellow",
+            metrics="bright_magenta",
         ),
     )
+    
+    # green-ish
+    # progress_bar_cb = RichProgressBar(
+    #     leave=False,
+    #     theme=RichProgressBarTheme(
+    #         description="bright_blue",
+    #         progress_bar="cyan",
+    #         progress_bar_finished="bright_cyan",
+    #         progress_bar_pulse="magenta",
+    #         batch_progress="bright_green",
+    #         time="bright_white",
+    #         processing_speed="bright_white",
+    #         metrics="bright_yellow",
+    #     ),
+    # )
     
     # let's init a Tensorboard Logger
     tb_logger = TensorBoardLogger(

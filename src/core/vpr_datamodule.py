@@ -15,6 +15,7 @@ from src.dataloaders.train.gsv_cities import GSVCitiesDataset
 # from src.utils import config_manager
 from src.utils import config_manager
 from src.dataloaders.valid.mapillary_sls import MapillarySLSDataset
+from src.dataloaders.valid.pittsburgh import PittsburghDataset
 
 class VPRDataModule(L.LightningDataModule):
     """
@@ -162,15 +163,17 @@ class VPRDataModule(L.LightningDataModule):
             hard_mining=hard_mining,
         )
     
-    def _get_val_dataset(self, ds_name):        
+    def _get_val_dataset(self, ds_name):  
         if "msls" in ds_name.lower():
             return MapillarySLSDataset(
                     dataset_path=self.val_set_paths[ds_name],
                     input_transform=self.val_transform
             )
         elif "pitts30k" in ds_name.lower():
-            pass
-            # return PittsburghDataset(which_ds=ds_name, input_transform=self.val_transform)
+            return PittsburghDataset(
+                    dataset_path=self.val_set_paths[ds_name],
+                    input_transform=self.val_transform
+            )
         # elif "nordland" in ds_name.lower():
             # return NordlandDataset(input_transform=self.val_transform)
         # elif "sped" in ds_name.lower():
@@ -210,12 +213,12 @@ class VPRDataModule(L.LightningDataModule):
             console.print(panel)
 
         def add_tree(panel_title, tree_data):
-            tree = Tree(panel_title, hide_root=True)
+            tree = Tree(panel_title, hide_root=True, guide_style="border")
             for node, children in tree_data.items():
-                branch = tree.add(node)
+                branch = tree.add(node, style="label")
                 for child in children:
-                    branch.add(child)
-            panel = Panel(tree, title=f"[title]{panel_title}[/title]", border_style="border", padding=(0, 1), expand=False)
+                    branch.add(child, style="value")
+            panel = Panel(tree, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 2), expand=False)
             console.print(panel)
         # Training dataset stats
         train_table = create_table()
@@ -233,9 +236,9 @@ class VPRDataModule(L.LightningDataModule):
 
          # Validation datasets
         val_tree_data = {
-            f"Validation set {i+1}": [
-                f"nb. queries: {val_set.num_queries}",
-                f"nb. references: {val_set.num_references}"
+            f"{self.val_set_names[i]}": [
+                f"queries:    {val_set.num_queries}",
+                f"references: {val_set.num_references}"
             ]
             for i, val_set in enumerate(self.val_datasets)
         }
@@ -246,8 +249,9 @@ class VPRDataModule(L.LightningDataModule):
         config_table = create_table()
         config_data = [
             ("train batch size (PxK)", f"{self.batch_size}x{self.img_per_place}"),
-            ("nb. of iter. per epoch", self.train_dataset.__len__() // self.batch_size),
+            ("iterations per epoch", self.train_dataset.__len__() // self.batch_size),
             ("train image size", f"{self.train_image_size[0]}x{self.train_image_size[1]}"),
             ("val image size", f"{self.val_image_size[0]}x{self.val_image_size[1]}")
         ]
         add_rows("Data configuration", config_table, config_data)
+        console.print("\n")

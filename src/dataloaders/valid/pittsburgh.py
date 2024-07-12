@@ -1,8 +1,11 @@
 from typing import Optional, Callable, Tuple, Any
 import pathlib
 import numpy as np
+from pathlib import Path
+
 from torch.utils.data import Dataset
 from PIL import Image
+from src.utils import config_manager
 
 
 # NOTE: you need to download the Pittsburg dataset from  the author's website
@@ -10,56 +13,65 @@ from PIL import Image
 # when downloaded, put the folders in a directory and inti 'root='YOUR_PATH'
 # I hardcoded the image names and ground truth for faster evaluation (which I include in the repo)
 
+REQUIRED_FILES = {
+    "pitts30k-val":     ["pitts30k_val_dbImages.npy", "pitts30k_val_qImages.npy", "pitts30k_val_gt_25m.npy"],
+    "pitts30k-test":    ["pitts30k_test_dbImages.npy", "pitts30k_test_qImages.npy", "pitts30k_test_gt_25m.npy"],
+    "pitts250k-test":   ["pitts250k_test_dbImages.npy", "pitts250k_test_qImages.npy", "pitts250k_test_gt_25m.npy"],
+}
 
 class PittsburghDataset(Dataset):
     """
-    Pittsburg dataset. It contains pitts30k_val, pitts30k_test and pitts250k_test.
+    Pittsburg dataset. It can load pitts30k-val, pitts30k-test and pitts250k-test.
 
     Args:
-        which_ds (str): Which of the three datasets to use.
+        dataset_path (str): Directory containing the dataset. If None, the path in config.yaml will be used.
         input_transform (callable, optional): Optional transform to be applied on each image.
-        root (str, optional): Directory with image folders of Nordland.
-        gt_root (str, optional): Directory with ground truth data (provided by GSV-Cities).
     """
 
     def __init__(
         self,
-        which_ds: str = "pitts30k_test",  # which of the three datasets to use
+        dataset_path: Optional [str] = None,
         input_transform: Optional[Callable] = None,
-        root: str = "/home/YOUR_DIR/datasets/Pittsburgh/",  # this points to image folders of MapillarySLS
-        gt_root: str = "/home/YOUR_DIR/gsv-cities/datasets/",  # this is hard coded ground truth from GSV-Cities framework
-        # root: str = "/run/media/amar/Storage/pitts30k-val",  # this points to image folders of MapillarySLS
-        # gt_root: str = "/run/media/amar/Storage/pitts30k-val",  # this is hard coded ground truth from GSV-Cities framework
     ):
-        assert which_ds.lower() in ["pitts30k_val", "pitts30k_test", "pitts250k_test"]
+        
         self.input_transform = input_transform
 
-        gt_root_path = pathlib.Path(gt_root)
-        if not gt_root_path.is_dir():
-            raise FileNotFoundError(
-                f"The ground truth directory {gt_root} does not exist. Please check the path. Make sure to use the ground truth from GSV-Cities framework."
-            )
-        root_path = pathlib.Path(root)
-        if not root_path.is_dir():
-            raise FileNotFoundError(f"Please check the path to the Pittsburg dataset.")
-
-        self.root_path = root_path
-        self.dbImages = np.load(
-            gt_root_path.joinpath(f"Pittsburgh/{which_ds}_dbImages.npy")
-        )
-        self.qImages = np.load(
-            gt_root_path.joinpath(f"Pittsburgh/{which_ds}_qImages.npy")
-        )
-
-        self.ground_truth = np.load(
-            gt_root_path.joinpath(f"Pittsburgh/{which_ds}_gt.npy"), allow_pickle=True
-        )
+        if dataset_path is None: # use path in config.yaml
+            print("Using the default path of `pitts30k-val` in config.yaml")
+            dataset_path = config_manager.get_dataset_path(dataset_name="pitts30k-val", dataset_type="val")
+        else:
+            dataset_path = Path(dataset_path)
+            if not dataset_path.is_dir():
+                raise FileNotFoundError(f"The directory {dataset_path} does not exist. Please check the path.")
+            
+        if "pitts30k-val" in dataset_path.name:
+            self.dataset_name = "pitts30k-val"
+        elif "pitts30k-test" in dataset_path.name:
+            self.dataset_name = "pitts30k-test"
+        elif "pitts250k-test" in dataset_path.name:
+            self.dataset_name = "pitts250k-test"
+        else:
+            raise FileNotFoundError(f"Please make sure the dataset name is either `pitts30k-val`, `pitts30k-test` or `pitts250k-test`.")
+        
+        # make sure required metadata files are in the directory        
+        if not all((dataset_path / file).is_file() for file in REQUIRED_FILES[self.dataset_name]):
+            raise FileNotFoundError(f"Please make sure all requiered metadata for {dataset_path} are in the directory. i.e. {REQUIRED_FILES[self.dataset_name]}")
+        
+        self.dataset_path = dataset_path
+        self.dbImages = np.load(dataset_path / REQUIRED_FILES[self.dataset_name][0])
+        self.qImages = np.load(dataset_path / REQUIRED_FILES[self.dataset_name][1])
+        self.ground_truth = np.load(dataset_path / REQUIRED_FILES[self.dataset_name][2], allow_pickle=True)
 
         # reference images then query images
         self.images = np.concatenate((self.dbImages, self.qImages))
         self.num_references = len(self.dbImages)
         self.num_queries = len(self.qImages)
 
+        # combine reference and query images
+        self.image_paths = np.concatenate((self.dbImages, self.qImages))
+        self.num_references = len(self.dbImages)
+        self.num_queries = len(self.qImages)
+        
     def __getitem__(self, index: int) -> Tuple[Any, int]:
         """
         Args:
@@ -68,8 +80,8 @@ class PittsburghDataset(Dataset):
         Returns:
             tuple: (image, index) where image is a PIL image.
         """
-        img_path = self.root_path.joinpath(self.images[index])
-        img = Image.open(img_path)
+        img_path = self.image_paths[index]
+        img = Image.open(self.dataset_path / img_path)
 
         if self.input_transform:
             img = self.input_transform(img)
@@ -81,4 +93,4 @@ class PittsburghDataset(Dataset):
         Returns:
             int: Length of the dataset.
         """
-        return len(self.images)
+        return len(self.image_paths)

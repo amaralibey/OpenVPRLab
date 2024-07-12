@@ -39,29 +39,28 @@ class MapillarySLSDataset(Dataset):
                 raise FileNotFoundError(f"The directory {dataset_path} does not exist. Please check the path.")
 
         # make sure the path contains folders `cph` and `sf` and  the 
-        # files `msls_val_ref_image_names.npy`, `msls_val_query_image_names.npy`, 
-        # and `msls_val_ground_truth_25m.npy`
+        # files `msls_val_dbImages.npy`, `msls_val_qImages.npy`, 
+        # and `msls_val_gt_25m.npy`
         if not (dataset_path / "cph").is_dir() or not (dataset_path / "sf").is_dir():
             raise FileNotFoundError(f"The directory {dataset_path} does not contain the folders `cph` and `sf`. Please check the path.")
-        if not (dataset_path / "msls_val_ref_image_names.npy").is_file():
-            raise FileNotFoundError(f"The file 'msls_val_ref_image_names.npy' does not exist in {dataset_path}. Please check the path.")
-        if not (dataset_path / "msls_val_query_image_names.npy").is_file():
-            raise FileNotFoundError(f"The file 'msls_val_query_image_names.npy' does not exist in {dataset_path}. Please check the path.")
-        if not (dataset_path / "msls_val_ground_truth_25m.npy").is_file():
-            raise FileNotFoundError(f"The file 'msls_val_ground_truth_25m.npy' does not exist in {dataset_path}. Please check the path.")
+        if not (dataset_path / "msls_val_dbImages.npy").is_file():
+            raise FileNotFoundError(f"The file 'msls_val_dbImages.npy' does not exist in {dataset_path}. Please check the path.")
+        if not (dataset_path / "msls_val_qImages.npy").is_file():
+            raise FileNotFoundError(f"The file 'msls_val_qImages.npy' does not exist in {dataset_path}. Please check the path.")
+        if not (dataset_path / "msls_val_gt_25m.npy").is_file():
+            raise FileNotFoundError(f"The file 'msls_val_gt_25m.npy' does not exist in {dataset_path}. Please check the path.")
         
+        self.dataset_name = "msls-val"
         self.dataset_path = dataset_path
         # Load image names and ground truth data
-        self.ref_image_names = np.load(dataset_path / "msls_val_ref_image_names.npy")
-        self.query_image_names = np.load(dataset_path / "msls_val_query_image_names.npy")
-
-
-        self.ground_truth = np.load(dataset_path / "msls_val_ground_truth_25m.npy", allow_pickle=True)
+        self.dbImages = np.load(dataset_path / "msls_val_dbImages.npy")
+        self.qImages = np.load(dataset_path / "msls_val_qImages.npy")
+        self.ground_truth = np.load(dataset_path / "msls_val_gt_25m.npy", allow_pickle=True)
 
         # Combine reference and query images
-        self.images_pahts = np.concatenate((self.ref_image_names, self.query_image_names))
-        self.num_references = len(self.ref_image_names)
-        self.num_queries = len(self.query_image_names)
+        self.image_paths = np.concatenate((self.dbImages, self.qImages))
+        self.num_references = len(self.dbImages)
+        self.num_queries = len(self.qImages)
 
     def __getitem__(self, index: int) -> Tuple[Any, int]:
         """
@@ -71,7 +70,7 @@ class MapillarySLSDataset(Dataset):
         Returns:
             tuple: (image, index) where image is a PIL image.
         """
-        img_path = self.images_pahts[index]
+        img_path = self.image_paths[index]
         img = Image.open(self.dataset_path / img_path)
 
         if self.input_transform:
@@ -84,4 +83,4 @@ class MapillarySLSDataset(Dataset):
         Returns:
             int: Length of the dataset.
         """
-        return len(self.images_pahts)
+        return len(self.image_paths)
