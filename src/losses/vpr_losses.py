@@ -1,8 +1,18 @@
-# This interface will contain a generic class for the loss functions
-# We instantiate a loss and perform online mining
-# we will use pytorch_metric_learning library for this
-# we can also develop our own loss function
-# and online mining process and call them here
+# ----------------------------------------------------------------------------
+# Copyright (c) 2024 Amar Ali-bey
+#
+# OpenVPRLab: https://github.com/amaralibey/OpenVPRLab
+#
+# Licensed under the MIT License. See LICENSE file in the project root.
+# ----------------------------------------------------------------------------
+
+
+
+# This interface will define a generic class for loss functions.
+# It will handle the instantiation of a loss function and perform online mining.
+# We will utilize the pytorch_metric_learning library for this purpose.
+# Additionally, we have the flexibility to develop and integrate custom loss functions
+# and online mining processes, which can be called here.
 
 from typing import Optional, Callable, Tuple, Any
 import torch

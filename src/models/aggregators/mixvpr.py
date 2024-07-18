@@ -1,9 +1,3 @@
-import torch.nn.functional as F
-import torch.nn as nn
-
-
-
-
 """
     MixVPR: Feature Mixing for Visual Place Recognition
     
@@ -20,6 +14,10 @@ import torch.nn as nn
     }
     
 """
+
+import torch.nn.functional as F
+import torch.nn as nn
+
 
 class FeatureMixerLayer(nn.Module):
     def __init__(self, in_dim, mlp_ratio=1):

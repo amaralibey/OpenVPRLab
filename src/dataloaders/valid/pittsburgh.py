@@ -8,10 +8,11 @@ from PIL import Image
 from src.utils import config_manager
 
 
-# NOTE: you need to download the Pittsburg dataset from  the author's website
+# NOTE: for pitts30k-test and pitts250k-test 
+# you need to download them from  the author's website
 # https://www.di.ens.fr/willow/research/netvlad/
-# when downloaded, put the folders in a directory and inti 'root='YOUR_PATH'
-# I hardcoded the image names and ground truth for faster evaluation (which I include in the repo)
+# 
+# For faster loading I hardcoded the image names and ground truth for pitts30k-val (already comes with OpenVPRLav)
 
 REQUIRED_FILES = {
     "pitts30k-val":     ["pitts30k_val_dbImages.npy", "pitts30k_val_qImages.npy", "pitts30k_val_gt_25m.npy"],

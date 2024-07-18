@@ -57,7 +57,7 @@ python scripts/datasets_downloader.py
 
 #### 2. Try the Framework:
 
-To quickly test if the framework is all set up. Run the following command (NOTE: you need at least gsv-cities-light and msls-val datasets to be downloaded in order for the training to run.)
+To quickly test if the framework is all set up. Run the following command (NOTE: you need at least `gsv-cities-light` and `msls-val` datasets to be downloaded in order for the training to run.)
 
 ```bash
 python run.py --dev

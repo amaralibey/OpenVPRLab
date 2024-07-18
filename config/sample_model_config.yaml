@@ -14,7 +14,7 @@ datamodule:
     - 320
     - 320
   img_per_place: 4
-  batch_size: 100
+  batch_size: 60
   num_workers: 8
   val_set_names:
     - "msls-val"
@@ -24,11 +24,11 @@ datamodule:
 # VPR Model Configuration
 #---------------------------------------------------
 backbone:
-  # resnet (resnet18, resnet34, resnet50, ...etc)
   module: src.models.backbones
   name: resnet50
   class: ResNet
   params:
+    backbone_name: "resnet50"  # name of the resnet backbone (see ResNet.AVAILABLE_MODELS)
     pretrained: true
     num_unfrozen_blocks: 1
     crop_last_block: true
@@ -85,7 +85,7 @@ loss_function:
 #---------------------------------------------------
 trainer:
   optimizer: adamw
-  lr: 0.0002      # learning rate
+  lr: 0.0001      # learning rate
   wd: 0.001       # weight decay
   warmup: 1500    # linear warmup steps
   max_epochs: 40
