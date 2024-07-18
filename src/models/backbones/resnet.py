@@ -16,8 +16,8 @@ class ResNet(nn.Module):
         self,
         backbone_name="resnet50",
         pretrained=True,
-        num_unfrozen_blocks=2,
         crop_last_block=True,
+        num_unfrozen_blocks=1,
     ):
         """Class representing the resnet backbone used in the pipeline.
         

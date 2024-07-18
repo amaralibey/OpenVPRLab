@@ -1,11 +1,11 @@
 import numpy as np
 import torch
 import lightning as L
-from src.utils import metrics
 import torch.nn.functional as F
 from torchvision import transforms as T
 from torchvision.transforms import v2 as T2
-
+import src.utils as utils
+import yaml
 
 class VPRFramework(L.LightningModule):
     def __init__(
@@ -20,6 +20,7 @@ class VPRFramework(L.LightningModule):
         milestones=[5, 10, 15],
         lr_mult=0.25,
         verbose=True,
+        config_dict=None,  # configuation to be saved with logs
     ):
         """
         Initializes the VPRFramework class.
@@ -49,7 +50,8 @@ class VPRFramework(L.LightningModule):
         self.verbose = verbose
         
         # save the hyperparameters except the classes
-        self.save_hyperparameters(ignore=["loss_function", "backbone", "aggregator", "verbose"])
+        # self.save_hyperparameters(ignore=["loss_function", "backbone", "aggregator", "verbose"])
+        self.save_hyperparameters(config_dict)
         
     def forward(self, x):
         """
@@ -138,7 +140,10 @@ class VPRFramework(L.LightningModule):
         Actions to perform at the start of training.
         """
         # you can do something here before the training starts
-        pass
+        # let's save the configuration to the log
+        # if self.config_dict is not None:
+        #     with open(f"{self.logger.log_dir}/config_args.yaml", 'w') as file:
+        #         yaml.dump(self.config_dict, file)
     
     ########################################################
     ################ Training loop starts here #############
@@ -251,7 +256,7 @@ class VPRFramework(L.LightningModule):
                 # we will use the descriptors, the number of references, number of queries, and the ground truth
                 # NOTE: make sure these are available in the dataset object and ARE IN THE RIGHT ORDER.
                 # meaning that the first `num_references` descriptors are reference images and the rest are query images
-                recalls_dict = metrics.compute_recalls(
+                recalls_dict = utils.compute_recall_performance(
                         descriptors, 
                         dataset.num_references,
                         dataset.num_queries,
@@ -266,5 +271,5 @@ class VPRFramework(L.LightningModule):
                 list_of_recalls.append(recalls_dict)
 
         if self.verbose:
-            metrics.print_recalls(list_of_recalls, dm.val_set_names)
+            utils.display_recall_performance(list_of_recalls, dm.val_set_names)
         self.validation_step_outputs.clear()

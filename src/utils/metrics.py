@@ -1,3 +1,5 @@
+from typing import List, Dict, Tuple
+
 import numpy as np
 import faiss
 import faiss.contrib.torch_utils
@@ -7,7 +9,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich import box
 
-def compute_recalls(
+def compute_recall_performance(
                 descriptors,
                 num_references,
                 num_queries,
@@ -65,23 +67,21 @@ def compute_recalls(
     return d
 
 
-# a function that prints the recall@k for each dataset
-def print_recalls(recalls_list, val_set_names, title="Recall@k Performance"):
-    if len(recalls_list) == 0:
+def display_recall_performance(recalls_list: List[Dict[int, float]], 
+                                val_set_names: List[str], 
+                                title: str = "Recall@k Performance") -> None:
+    if not recalls_list:
         return
-
     console = Console()
-    console.print('\n') # for better formatting in console
+    console.print("\n")
     table = Table(title=None, box=box.SIMPLE, header_style="bold")
+    k_values = list(recalls_list[0].keys())
 
-    k_values = list(
-        recalls_list[0].keys()
-    )  # get the k values from first dict (they're the same for all datasets)
-    table.add_column("Dataset", justify="left", style="")
+    table.add_column("Dataset", justify="left")
     for k in k_values:
-        table.add_column(f"R@{str(k)}", justify="center")
+        table.add_column(f"R@{k}", justify="center")
 
     for i, recalls in enumerate(recalls_list):
-        table.add_row(val_set_names[i], *[f"{100*v:.2f}" for v in recalls.values()])
+        table.add_row(val_set_names[i], *[f"{100 * v:.2f}" for v in recalls.values()])
 
     console.print(Panel(table, expand=False, title=title))

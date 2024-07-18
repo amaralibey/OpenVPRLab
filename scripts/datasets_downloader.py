@@ -110,8 +110,8 @@ def execute_script(script_path: str, dataset_name: str, dataset_type: str) -> No
 
 
 def update_config_yaml(dataset_name: str, dataset_type: str, dataset_path: str) -> None:
-    """Update the config.yaml file with the path of the downloaded dataset."""
-    config_path = Path(__file__).parent.parent / "config.yaml" # Assuming the config file is in the project root
+    """Update the config/data_config.yaml file with the path of the downloaded dataset."""
+    config_path = Path(__file__).parent.parent / "config/data_config.yaml" # Assuming the config file is in the project root
     
     try:
         with open(config_path, 'r') as file:
@@ -133,7 +133,7 @@ def update_config_yaml(dataset_name: str, dataset_type: str, dataset_path: str) 
     with open(config_path, 'w') as file:
         yaml.dump(config, file, default_flow_style=False)
     
-    console.print(f"Updated config.yaml with path for {dataset_name}", style="bold green")
+    console.print(f"Updated config/data_config.yaml with path for {dataset_name}", style="bold green")
 
 
 

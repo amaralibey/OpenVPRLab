@@ -33,10 +33,10 @@ from src.utils import config_manager
 
 
 
-# First, check if the dataset is downloaded and the path put in the config.yaml file
+# First, check if the dataset is downloaded and the path put in the config/data_config.yaml file
 # available_train_datasets = ConfigManager.get_dataset_paths_by_type("train")
 
-# assert "gsv_cities" in available_train_datasets, "GSV-Cities dataset not found in the configuration file. Please check `config.yaml` file."
+# assert "gsv_cities" in available_train_datasets, "GSV-Cities dataset not found in the configuration file. Please check `config/data_config.yaml` file."
 
 # Transforms are passed to the dataset, if not, we will use this standard transform
 default_transform = T.Compose([
@@ -65,9 +65,9 @@ class GSVCitiesDataset(Dataset):
         """
         super().__init__()
         
-        # check if the dataset path is provided, if not, use the one in the config.yaml file
+        # check if the dataset path is provided, if not, use the one in the config/data_config.yaml file
         if dataset_path is None:
-            print("No dataset path provided. Using `gsv-cities-light`. We will try to load the one in the config.yaml file.")
+            print("No dataset path provided. Using `gsv-cities-light`. We will try to load the one in the config/data_config.yaml file.")
             dataset_path = config_manager.get_dataset_path(
                 dataset_name="gsv-cities-light", 
                 dataset_type="train")

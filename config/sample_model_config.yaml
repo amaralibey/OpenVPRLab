@@ -1,0 +1,96 @@
+# ----------------------------------------------------------------------------
+# Copyright (c) 2024 Amar Ali-bey
+# # https://github.com/amaralibey/OpenVPRLab
+# Licensed under the MIT License. See LICENSE file in the project root.
+# ----------------------------------------------------------------------------
+
+
+#---------------------------------------------------
+# Datamodule Configuration
+#---------------------------------------------------
+datamodule:
+  train_set_name: "gsv-cities-light" # use "gsv-cities" if you have downloaded the full dataset
+  train_image_size: 
+    - 320
+    - 320
+  img_per_place: 4
+  batch_size: 100
+  num_workers: 8
+  val_set_names:
+    - "msls-val"
+    - "pitts30k-val"
+
+#---------------------------------------------------
+# VPR Model Configuration
+#---------------------------------------------------
+backbone:
+  # resnet (resnet18, resnet34, resnet50, ...etc)
+  module: src.models.backbones
+  name: resnet50
+  class: ResNet
+  params:
+    pretrained: true
+    num_unfrozen_blocks: 1
+    crop_last_block: true
+  
+  # Example of DinoV2
+  # name: dinov2
+  # module: src.models.backbones
+  # class: DinoV2
+  # params:
+  #   backbone_name: "dinov2_vitb14" # name of the vit backbone (see DinoV2.AVAILABLE_MODELS)
+  #   num_unfrozen_blocks: 2
+
+aggregator:
+  module: src.models.aggregators # module path
+  name: boq     # name of python file (without .py) in src/models/aggregators
+  class: BoQ    # class name in the __init__.py file in the aggregators directory
+  params:
+    # in_channels: 1024 # we will derive this from the backbone.
+    proj_channels: 512
+    num_queries: 32
+    num_layers: 2
+    row_dim: 32
+
+  # Example of MixVPR
+  # module: src.models.aggregators
+  # name: mixvpr    # name of python file (without .py) in src/models/aggregators
+  # class: MixVPR   # class name
+  # params:
+  #   in_channels: 1024   # we will derive this from the backbone.
+  #   in_h: 20            # input height (this depends on the input image size and the backbone)
+  #   in_w: 20
+  #   out_channels: 512
+  #   mix_depth: 4
+  #   mlp_ratio: 1
+  #   out_rows: 4
+
+#---------------------------------------------------
+# Loss Function Configuration
+#---------------------------------------------------
+loss_function: 
+  # check src/losses/vpr_losses.py for available loss functions, we are using pytorch_metric_learning library
+  # if you want to develop your own loss function, you can add it to the vpr_losses.py file
+  # or create a new file in the losses directory and import it into the __inin__.py file
+  module: src.losses
+  name: vpr_losses
+  class: VPRLossFunction
+  params:
+    loss_fn_name: "MultiSimilarityLoss"   # other possible values: "SupConLoss", "ContrastiveLoss", "TripletMarginLoss"
+    miner_name: "MultiSimilarityMiner"    # other possible values: "TripletMarginMiner", "PairMarginMiner"
+
+
+#---------------------------------------------------
+# Trainer Configuration
+#---------------------------------------------------
+trainer:
+  optimizer: adamw
+  lr: 0.0002      # learning rate
+  wd: 0.001       # weight decay
+  warmup: 1500    # linear warmup steps
+  max_epochs: 40
+  milestones:
+    - 10
+    - 20
+    - 30
+  lr_mult: 0.1 # learning rate multiplier at each milestone

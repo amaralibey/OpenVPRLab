@@ -1,0 +1,1 @@
+from .vpr_losses import VPRLossFunction

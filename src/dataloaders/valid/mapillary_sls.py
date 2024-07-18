@@ -11,7 +11,7 @@ class MapillarySLSDataset(Dataset):
     MapillarySLS validation dataset for visual place recognition.
 
     Args:
-        dataset_path (str): Directory containing the dataset. If None, the path in config.yaml will be used.
+        dataset_path (str): Directory containing the dataset. If None, the path in config/data_config.yaml will be used.
         input_transform (callable, optional): Optional transform to be applied on each image.
         
     Reference:
@@ -31,7 +31,7 @@ class MapillarySLSDataset(Dataset):
     ):
         self.input_transform = input_transform
 
-        if dataset_path is None: # use path in config.yaml
+        if dataset_path is None: # use path in config/data_config.yaml
             dataset_path = config_manager.get_dataset_path(dataset_name="msls-val", dataset_type="val")
         else:
             dataset_path = Path(dataset_path)

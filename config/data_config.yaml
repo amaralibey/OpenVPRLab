@@ -1,3 +1,4 @@
+# this configuration file is used to specify the paths to the datasets used in this framework
 datasets:
   train:
     gsv-cities: /home/amar/work/OpenVPRLab/data/train/gsv-cities

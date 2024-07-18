@@ -31,7 +31,6 @@ class VPRDataModule(L.LightningDataModule):
         train_image_size: Tuple indicating the size of training images (height, width).
         val_image_size: Tuple indicating the size of validation images (height, width). Default is None. meaning use the same as train_image_size. 
         num_workers: Number of worker processes for data loading.
-        print_data_stats: If True, prints datasets statistics.
         cities: List of cities to be included in the training dataset (specific to GSV-Cities).
         mean_std: Dictionary indicating the mean and standard deviation of the dataset for normalization.
         batch_sampler: A custom sampler for drawing batches of data.
@@ -53,7 +52,6 @@ class VPRDataModule(L.LightningDataModule):
         num_workers=4,
         batch_sampler=None,
         mean_std={"mean":[0.485, 0.456, 0.406], "std":[0.229, 0.224, 0.225]},
-        print_data_stats=True,
     ):
         super().__init__()
         self.train_set_name = train_set_name
@@ -64,21 +62,19 @@ class VPRDataModule(L.LightningDataModule):
         self.val_image_size = val_image_size if val_image_size is not None else train_image_size
         self.num_workers = num_workers
         self.batch_sampler = batch_sampler
-        self.print_data_stats = print_data_stats
         self.cities = cities
         self.mean_std = mean_std
         self.random_sample_from_each_place = random_sample_from_each_place
         self.val_set_names = val_set_names
 
-        
         # check that the training dataset exists
-        # its path is defined in the config.yaml file
+        # its path is defined in the config/data_config.yaml file
         # let's call the config_manager to check this
         self.train_set_path = config_manager.get_dataset_path(dataset_name=self.train_set_name, 
                                                               dataset_type="train")
         
         # check that the validation datasets exist
-        # theirs paths are defined in the config.yaml file
+        # theirs paths are defined in the config/data_config.yaml file
         # let's call the config_manager to check this
         self.val_set_paths = {} 
         for ds_name in self.val_set_names:
@@ -89,6 +85,7 @@ class VPRDataModule(L.LightningDataModule):
         # Define the train transformations
         self.train_transform = T2.Compose([
             T2.ToImage(),  # Convert to tensor, only needed if you had a PIL image
+            T2.Resize(size=self.train_image_size, interpolation=T2.InterpolationMode.BICUBIC, antialias=True),
             T2.RandAugment(num_ops=3, magnitude=15, interpolation=T2.InterpolationMode.BILINEAR),
             T2.ToDtype(torch.float32, scale=True),
             T2.Normalize(mean=self.mean_std["mean"], std=self.mean_std["std"]),
@@ -109,9 +106,11 @@ class VPRDataModule(L.LightningDataModule):
         if stage == "fit":
             self.train_dataset = self._get_train_dataset()
             self.val_datasets = [self._get_val_dataset(ds_name) for ds_name in self.val_set_names]
-        if self.print_data_stats:
-            self.print_stats()
-    
+        if stage == "test":
+            self.val_datasets = [self._get_val_dataset(ds_name) for ds_name in self.val_set_names]
+        if stage == "predict":
+            self.val_datasets = [self._get_val_dataset(ds_name) for ds_name in self.val_set_names]
+               
     def train_dataloader(self):
         # the reason we are using `_get_train_dataset` here is because
         # sometimes we want to shuffle the data (in-city only) at each epoch
@@ -180,78 +179,3 @@ class VPRDataModule(L.LightningDataModule):
             # return SPEDDataset(input_transform=self.val_transform)
         else:
             raise ValueError(f"Unknown dataset name: {ds_name}")
-
-
-    def print_stats(self):
-        from rich.table import Table
-        from rich.console import Console
-        from rich import box
-        from rich.theme import Theme
-        from rich.panel import Panel
-        from rich.tree import Tree
-        
-        custom_theme = Theme({
-            "title": "not italic white",
-            "label": "dark_sea_green3",
-            "value": "light_steel_blue",
-            "border": "grey50",
-        })
-
-        console = Console(theme=custom_theme)
-        console.print("\n")
-
-        def create_table():
-            return Table(
-                box=None,  # Making the table transparent
-                show_header=False
-            )
-
-        def add_rows(panel_title, table, data):
-            for row in data:
-                table.add_row(f"[label]{row[0]}[/label]", f"[value]{row[1]}[/value]")
-            panel = Panel(table, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 1), expand=False)
-            console.print(panel)
-
-        def add_tree(panel_title, tree_data):
-            tree = Tree(panel_title, hide_root=True, guide_style="border")
-            for node, children in tree_data.items():
-                branch = tree.add(node, style="label")
-                for child in children:
-                    branch.add(child, style="value")
-            panel = Panel(tree, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 2), expand=False)
-            console.print(panel)
-        # Training dataset stats
-        train_table = create_table()
-        train_data = [
-            ("nb. of cities", len(self.train_dataset.cities)),
-            ("nb. of places", self.train_dataset.__len__()),
-            ("nb. of images", self.train_dataset.total_nb_images)
-        ]
-        add_rows("Training dataset stats", train_table, train_data)
-
-        # Validation datasets
-        # val_table = create_table()
-        # val_data = [(f"val dataset {i+1}  ", name) for i, name in enumerate(self.val_set_names)]
-        # add_rows("Validation datasets", val_table, val_data)
-
-         # Validation datasets
-        val_tree_data = {
-            f"{self.val_set_names[i]}": [
-                f"queries:    {val_set.num_queries}",
-                f"references: {val_set.num_references}"
-            ]
-            for i, val_set in enumerate(self.val_datasets)
-        }
-        add_tree("Validation datasets", val_tree_data)
-
-        
-        # Data configuration
-        config_table = create_table()
-        config_data = [
-            ("train batch size (PxK)", f"{self.batch_size}x{self.img_per_place}"),
-            ("iterations per epoch", self.train_dataset.__len__() // self.batch_size),
-            ("train image size", f"{self.train_image_size[0]}x{self.train_image_size[1]}"),
-            ("val image size", f"{self.val_image_size[0]}x{self.val_image_size[1]}")
-        ]
-        add_rows("Data configuration", config_table, config_data)
-        console.print("\n")
