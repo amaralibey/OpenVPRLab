@@ -80,12 +80,13 @@ class GSVCitiesDataset(Dataset):
         
         # let's check if the cities are valid
         if cities == "all" or cities is None:
+            # get all cities from the Dataframes folder
             cities = [f.name[:-4] for f in self.base_path.glob("Dataframes/*.csv")]
         else:
             for city in cities:
                 if not (self.base_path / 'Dataframes' / f'{city}.csv').exists():
                     raise FileNotFoundError(f"Dataframe for city {city} not found. Please check the city name.")
-        
+
         self.cities = cities
         self.img_per_place = img_per_place
         self.random_sample_from_each_place = random_sample_from_each_place

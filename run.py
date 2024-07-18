@@ -20,11 +20,29 @@ IMAGENET_MEAN_STD = {"mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]
 # if you want to use a subset cities, you edit the list
 # and pass it to the VPRDataModule
 ALL_CITIES = [
-    'Bangkok', 'BuenosAires', 'LosAngeles', 'MexicoCity',
-    'OSL', 'Rome', 'Barcelona', 'Chicago', 'Madrid', 'Miami',
-    'Phoenix', 'TRT', 'Boston', 'Lisbon', 'Medellin', 
-    'Minneapolis', 'PRG', 'WashingtonDC', 'Brussels',
-    'London', 'Melbourne', 'Osaka', 'PRS',
+    'Bangkok', 
+    'BuenosAires', 
+    'LosAngeles', 
+    'MexicoCity',
+    'OSL', 
+    'Rome', 
+    'Barcelona', 
+    'Chicago', 
+    'Madrid', 
+    'Miami',
+    'Phoenix', 
+    'TRT', 
+    'Boston', 
+    'Lisbon', 
+    'Medellin', 
+    'Minneapolis', 
+    'PRG', 
+    'WashingtonDC', 
+    'Brussels',
+    'London', 
+    'Melbourne', 
+    'Osaka', 
+    'PRS',
 ]
 
 
@@ -47,7 +65,7 @@ def train(config):
     # let's create the VPR DataModule
     datamodule = VPRDataModule(
         train_set_name=config['datamodule']['train_set_name'],
-        cities=None, # if None the we use all cities, otherwise pass a list of cities
+        cities=config['datamodule']['cities'], # if None or "all" then we use all cities
         train_image_size=config['datamodule']['train_image_size'],
         batch_size=config['datamodule']['batch_size'],
         img_per_place=config['datamodule']['img_per_place'],

@@ -41,7 +41,7 @@ def print_available_datasets() -> None:
     table.add_column("Type")
     table.add_column("Size", justify="right", min_width=10)
 
-    table.add_row("", "Dataset", "Type", "Size", style="italic green")
+    table.add_row("", "Dataset", "Type", "Size", style="italic red")
     # table.add_row("", "----------------", "----", "----", style="bold green")
     for i, item in enumerate(AVAILABLE_DATASETS.items(), 1):
         dataset, (_, size, type) = item

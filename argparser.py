@@ -69,6 +69,7 @@ def update_config_with_args_and_defaults(config: Dict[str, Any], args: argparse.
         'train': True,
         'datamodule': {
             'train_set_name': "gsv-cities-light",
+            'cities': "all",
             'val_set_names': ["msls-val"],
             'train_image_size': [320, 320],
             'batch_size': 60,
