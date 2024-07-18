@@ -39,7 +39,7 @@ aggregator:
   name: mixvpr # name of python file (without .py) in src/models/aggregators
   class: MixVPR # class name
   params:
-    # in_channels: 1024   # we will derive this from the backbone.
+    in_channels:  # if left blank we will use backbone.out_channels.
     in_h: 20            # input height (this depends on the input image size and the backbone)
     in_w: 20
     out_channels: 512

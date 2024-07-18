@@ -46,7 +46,7 @@ aggregator:
   name: boq     # name of python file (without .py) in src/models/aggregators
   class: BoQ    # class name in the __init__.py file in the aggregators directory
   params:
-    # in_channels: 1024 # we will derive this from the backbone.
+    in_channels:  # if left blank we will use backbone.out_channels.
     proj_channels: 512
     num_queries: 32
     num_layers: 2

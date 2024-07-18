@@ -30,7 +30,7 @@ def parse_args() -> Dict[str, Any]:
     # Trainer arguments
     parser.add_argument('--optimizer', type=str, help='Optimizer name')
     parser.add_argument('--lr', type=float, help='Learning rate')
-    parser.add_argument('--weight_decay', type=float, help='Weight decay')
+    parser.add_argument('--wd', type=float, help='Weight decay')
     parser.add_argument('--warmup', type=int, help='Number of warmup steps')
     parser.add_argument('--milestones', nargs='+', type=int, help='Milestones for learning rate scheduler')
     parser.add_argument('--lr_mult', type=float, help='Learning rate multiplier for scheduler')
@@ -144,8 +144,8 @@ def update_config_with_args_and_defaults(config: Dict[str, Any], args: argparse.
         config['trainer']['optimizer'] = arg_dict['optimizer']
     if arg_dict['lr'] is not None:
         config['trainer']['lr'] = arg_dict['lr']
-    if arg_dict['weight_decay'] is not None:
-        config['trainer']['wd'] = arg_dict['weight_decay']
+    if arg_dict['wd'] is not None:
+        config['trainer']['wd'] = arg_dict['wd']
     if arg_dict['warmup'] is not None:
         config['trainer']['warmup'] = arg_dict['warmup']
     if arg_dict['milestones'] is not None:

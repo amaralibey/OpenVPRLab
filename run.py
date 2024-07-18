@@ -86,7 +86,10 @@ def train(config):
     out_channels = backbone.out_channels
     # most of the time, the aggregator needs to know the number of output channels of the backbone
     # that arguments is passed to the aggregator as a parameter `in_channels`
-    config['aggregator']['params']['in_channels'] = out_channels
+    if 'in_channels' in config['aggregator']['params']:
+        if config['aggregator']['params']['in_channels'] is None:
+            config['aggregator']['params']['in_channels'] = out_channels
+    
     aggregator = get_instance(config['aggregator']['module'], config['aggregator']['class'], config['aggregator']['params'])
     loss_function = get_instance(config['loss_function']['module'], config['loss_function']['class'], config['loss_function']['params'])
 
