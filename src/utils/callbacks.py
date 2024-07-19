@@ -102,28 +102,31 @@ class DatamoduleSummary(Callback):
         return Table(box=None, show_header=False, min_width=32)
 
     def add_rows(self, panel_title: str, table: Table, data: List[Tuple[str, str]]) -> None:
-        # for row in data:
-            # table.add_row(f"[label]{row[0]}[/label]", f"[value]{row[1]}[/value]")
-        # panel = Panel(table, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 1), expand=False)
         for row in data:
-            table.add_row(row[0], row[1])
-        panel = Panel(table, title=panel_title, padding=(1, 1), expand=False)
+            table.add_row(f"[label]{row[0]}[/label]", f"[value]{row[1]}[/value]")
+        panel = Panel(table, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 1), expand=False)
+        
+        # for row in data:
+        #     table.add_row(row[0], row[1])
+        # panel = Panel(table, title=panel_title, padding=(1, 1), expand=False)
+        
         self.console.print(panel)
 
     def add_tree(self, panel_title: str, tree_data: dict) -> None:
-        # tree = Tree(panel_title, hide_root=True, guide_style="border")
-        # for node, children in tree_data.items():
-        #     branch = tree.add(f"[label]{node}[/label]")
-        #     for child in children:
-        #         branch.add(f"[value]{child}[/value]")
-        # panel = Panel(tree, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 2), expand=False)
-        
-        tree = Tree(panel_title, hide_root=True)
+        tree = Tree(panel_title, hide_root=True, guide_style="border")
         for node, children in tree_data.items():
-            branch = tree.add(node)
+            branch = tree.add(f"[label]{node}[/label]")
             for child in children:
-                branch.add(child)
-        panel = Panel(tree, title=panel_title, padding=(1, 2), expand=False)
+                branch.add(f"[value]{child}[/value]")
+        panel = Panel(tree, title=f"[title]{panel_title}[/title]", border_style="border", padding=(1, 2), expand=False)
+        
+        # tree = Tree(panel_title, hide_root=True)
+        # for node, children in tree_data.items():
+        #     branch = tree.add(node)
+        #     for child in children:
+        #         branch.add(child)
+        # panel = Panel(tree, title=panel_title, padding=(1, 2), expand=False)
+
         self.console.print(panel)
 
 
@@ -183,7 +186,7 @@ class CustomRichProgressBar(RichProgressBar):
                     time=THEMES[theme_name]["text"],               # Time color
                     processing_speed=THEMES[theme_name]["text"],   # Processing speed color
                     metrics=THEMES[theme_name]["label"],           # Metrics color
-                    metrics_text_delimiter=" • ",      # Metrics text delimiter
+                    metrics_text_delimiter="\n",      # Metrics text delimiter
                     metrics_format=".2f",
                 ),
             )

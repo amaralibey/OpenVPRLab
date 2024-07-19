@@ -9,12 +9,12 @@
 # Datamodule Configuration
 #---------------------------------------------------
 datamodule:
-  train_set_name: "gsv-cities" # use "gsv-cities" if you have downloaded the full dataset
+  train_set_name: "gsv-cities-light" # use "gsv-cities" if you have downloaded the full dataset
   train_image_size: 
     - 280
     - 280
   img_per_place: 4
-  batch_size: 100
+  batch_size: 60
   num_workers: 8
   val_set_names:
     - "msls-val"
@@ -24,21 +24,23 @@ datamodule:
 # VPR Model Configuration
 #---------------------------------------------------
 backbone:
+  # Example of DinoV2
   module: src.models.backbones
   class: DinoV2
   params:
     backbone_name: "dinov2_vitb14" # name of the vit backbone (see DinoV2.AVAILABLE_MODELS)
     num_unfrozen_blocks: 2
+    return_cls_token: True
 
 aggregator:
   module: src.models.aggregators # module path
-  class: BoQ    # class name in the __init__.py file in the aggregators directory
+  class: SALAD    # class name in the __init__.py file in the aggregators directory
   params:
-    in_channels:  # if left blank we will use backbone.out_channels.
-    proj_channels: 512
-    num_queries: 32
-    num_layers: 2
-    row_dim: 32
+    num_channels: 768
+    num_clusters: 64
+    cluster_dim: 128
+    token_dim: 256
+    dropout: 0.
 
 #---------------------------------------------------
 # Loss Function Configuration
@@ -48,7 +50,6 @@ loss_function:
   # if you want to develop your own loss function, you can add it to the vpr_losses.py file
   # or create a new file in the losses directory and import it into the __inin__.py file
   module: src.losses
-  name: vpr_losses
   class: VPRLossFunction
   params:
     loss_fn_name: "MultiSimilarityLoss"   # other possible values: "SupConLoss", "ContrastiveLoss", "TripletMarginLoss"
@@ -60,9 +61,9 @@ loss_function:
 #---------------------------------------------------
 trainer:
   optimizer: adamw
-  lr: 0.0002      # learning rate
+  lr: 0.0001      # learning rate
   wd: 0.001       # weight decay
-  warmup: 0    # linear warmup steps
+  warmup: 1500    # linear warmup steps
   max_epochs: 40
   milestones:
     - 10

@@ -14,6 +14,7 @@ class DinoV2(nn.Module):
         self,
         backbone_name="dinov2_vitb14",
         num_unfrozen_blocks=2,
+        return_cls_token=False,
     ):
         """DinoV2 backbone with the ability to keep only the last num_unfrozen_blocks trainable.
 
@@ -28,7 +29,7 @@ class DinoV2(nn.Module):
         
         self.backbone_name = backbone_name
         self.num_unfrozen_blocks = num_unfrozen_blocks
-        
+        self.return_cls_token = return_cls_token
         # make sure the backbone_name is in the available models
         if self.backbone_name not in self.AVAILABLE_MODELS:
             raise ValueError(f"Backbone {self.backbone_name} is not recognized!" 
@@ -60,10 +61,14 @@ class DinoV2(nn.Module):
         for blk in self.dino.blocks[-self.num_unfrozen_blocks : ]:
             x = blk(x)
             
-        
+        x_cls = x[:, 0]
         x = x[:, 1:] # remove the [CLS] token
         
         # reshape the output tensor to B, C, H, W
         _, _, C = x.shape # we know C == self.dino.embed_dim, but still...
         x = x.permute(0, 2, 1).contiguous().view(B, C, H//14, W//14)
+        
+        if self.return_cls_token:
+            return x, x_cls
+        
         return x

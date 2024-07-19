@@ -90,10 +90,10 @@ def train(config):
     # Let's instantiate the backbone, aggregator and loss function. These are the main components of the VPRFramework
     # Make sure the model_config.yaml file is properly configured
     backbone = get_instance(config['backbone']['module'], config['backbone']['class'], config['backbone']['params'])
+    out_channels = backbone.out_channels # all backbones should have an out_channels attribute
     
-    out_channels = backbone.out_channels
     # most of the time, the aggregator needs to know the number of output channels of the backbone
-    # that arguments is passed to the aggregator as a parameter `in_channels`
+    # that arguments is passed to the aggregator as a parameter `in_channels` for some aggregators
     if 'in_channels' in config['aggregator']['params']:
         if config['aggregator']['params']['in_channels'] is None:
             config['aggregator']['params']['in_channels'] = out_channels

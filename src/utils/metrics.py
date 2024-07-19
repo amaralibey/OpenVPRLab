@@ -93,3 +93,4 @@ def display_recall_performance(recalls_list: List[Dict[int, float]],
         table.add_row(val_set_names[i], *[f"{100 * v:.2f}" for v in recalls.values()])
 
     console.print(Panel(table, expand=False, title=title))
+    console.print("\n")

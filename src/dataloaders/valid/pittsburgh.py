@@ -25,7 +25,7 @@ class PittsburghDataset(Dataset):
     Pittsburg dataset. It can load pitts30k-val, pitts30k-test and pitts250k-test.
 
     Args:
-        dataset_path (str): Directory containing the dataset. If None, the path in config/data_config.yaml will be used.
+        dataset_path (str): Directory containing the dataset. If None, the path in config/data/config.yaml will be used.
         input_transform (callable, optional): Optional transform to be applied on each image.
     """
 
@@ -37,8 +37,8 @@ class PittsburghDataset(Dataset):
         
         self.input_transform = input_transform
 
-        if dataset_path is None: # use path in config/data_config.yaml
-            print("Using the default path of `pitts30k-val` in config/data_config.yaml")
+        if dataset_path is None: # use path in config/data/config.yaml
+            print("Using the default path of `pitts30k-val` in config/data/config.yaml")
             dataset_path = config_manager.get_dataset_path(dataset_name="pitts30k-val", dataset_type="val")
         else:
             dataset_path = Path(dataset_path)

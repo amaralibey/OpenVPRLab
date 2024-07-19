@@ -69,13 +69,13 @@ class VPRDataModule(L.LightningDataModule):
         self.val_set_names = val_set_names
 
         # check that the training dataset exists
-        # its path is defined in the config/data_config.yaml file
+        # its path is defined in the config/data/config.yaml file
         # let's call the config_manager to check this
         self.train_set_path = config_manager.get_dataset_path(dataset_name=self.train_set_name, 
                                                               dataset_type="train")
         
         # check that the validation datasets exist
-        # theirs paths are defined in the config/data_config.yaml file
+        # theirs paths are defined in the config/data/config.yaml file
         # let's call the config_manager to check this
         self.val_set_paths = {} 
         for ds_name in self.val_set_names:

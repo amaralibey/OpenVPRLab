@@ -1,0 +1,72 @@
+# ----------------------------------------------------------------------------
+# Copyright (c) 2024 Amar Ali-bey
+# https://github.com/amaralibey/OpenVPRLab
+# Licensed under the MIT License. See LICENSE file in the project root.
+# ----------------------------------------------------------------------------
+
+
+#---------------------------------------------------
+# Datamodule Configuration
+#---------------------------------------------------
+datamodule:
+  train_set_name: "gsv-cities-light" # use "gsv-cities" if you have downloaded the full dataset
+  train_image_size: 
+    - 320
+    - 320
+  img_per_place: 4
+  batch_size: 100
+  num_workers: 8
+  val_set_names:
+    - "msls-val"
+    - "pitts30k-val"
+
+#---------------------------------------------------
+# VPR Model Configuration
+#---------------------------------------------------
+backbone:
+  module: src.models.backbones
+  class: ResNet
+  params:
+    backbone_name: "resnet50"  # name of the resnet backbone (see ResNet.AVAILABLE_MODELS)
+    pretrained: true
+    num_unfrozen_blocks: 1
+    crop_last_block: False
+
+aggregator:
+  module: src.models.aggregators # module path
+  class: ConvAP    # class name in the __init__.py file in the aggregators directory
+  params:
+    in_channels:  # if left blank we will use backbone.out_channels.
+    out_channels: 512
+    s1: 2
+    s2: 2
+
+
+#---------------------------------------------------
+# Loss Function Configuration
+#---------------------------------------------------
+loss_function: 
+  # check src/losses/vpr_losses.py for available loss functions, we are using pytorch_metric_learning library
+  # if you want to develop your own loss function, you can add it to the vpr_losses.py file
+  # or create a new file in the losses directory and import it into the __inin__.py file
+  module: src.losses
+  class: VPRLossFunction
+  params:
+    loss_fn_name: "MultiSimilarityLoss"   # other possible values: "SupConLoss", "ContrastiveLoss", "TripletMarginLoss"
+    miner_name: "MultiSimilarityMiner"    # other possible values: "TripletMarginMiner", "PairMarginMiner"
+
+
+#---------------------------------------------------
+# Trainer Configuration
+#---------------------------------------------------
+trainer:
+  optimizer: adamw
+  lr: 0.0001      # learning rate
+  wd: 0.001       # weight decay
+  warmup: 1500    # linear warmup steps
+  max_epochs: 40
+  milestones:
+    - 10
+    - 20
+    - 30
+  lr_mult: 0.1 # learning rate multiplier at each milestone
