@@ -39,8 +39,11 @@ git clone https://github.com/amaralibey/OpenVPRLab.git
 # Navigate to the project directory
 cd OpenVPRLab
 
-# Install the required dependencies
-pip install -r requirements.txt
+# Create environment and install the required dependencies
+conda env create -f environment.yml
+
+# activate the openvpr environment
+conda activate openvpr
 ```
 
 ## Getting Started

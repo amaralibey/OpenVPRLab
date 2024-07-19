@@ -10,11 +10,11 @@
 
 # This interface will define a generic class for loss functions.
 # It will handle the instantiation of a loss function and perform online mining.
-# We will utilize the pytorch_metric_learning library for this purpose.
+# We will use the pytorch_metric_learning library for this purpose.
 # Additionally, we have the flexibility to develop and integrate custom loss functions
 # and online mining processes, which can be called here.
 
-from typing import Optional, Callable, Tuple, Any
+# from typing import Optional, Callable, Tuple, Any
 import torch
 from pytorch_metric_learning import losses, miners
 from pytorch_metric_learning.distances import (
