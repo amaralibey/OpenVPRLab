@@ -136,7 +136,7 @@ You can start training with the default settings by running the following comman
 python run.py --backbone ResNet --aggregator ConvAP --batch_size 60 --lr 0.0001
 ```
 
-NOTE: in order to control `in_channels` and type of backbone (and many more), it's better to use a config file.
+NOTE: in order to arguments of your aggregator and backbone (and more), it's better to use a config file.
 
 #### 4. Create a Configuration File
 
@@ -206,3 +206,5 @@ Tensorboard loggings will also be saved into the directory. Run the following co
 ```bash
 tensorboard --logdir ./logs/resnet18/ConvAP
 ```
+
+## More features, tutorials and methods to come soon...
