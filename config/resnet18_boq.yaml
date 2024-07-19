@@ -72,7 +72,7 @@ loss_function:
 #---------------------------------------------------
 trainer:
   optimizer: adamw
-  lr: 0.0002      # learning rate
+  lr: 0.0004      # learning rate
   wd: 0.001       # weight decay
   warmup: 1500    # linear warmup steps
   max_epochs: 40
