@@ -14,7 +14,7 @@ Visual Place Recognition (VPR) is a crucial task in robotics and computer vision
 
 ## Features
 
-![1721342315056](image/README/1721342315056.png)
+![1721355257851](image/README/1721355257851.png)
 
 * **Easy Dataset Management**
   * Download datasets like `GSV-Cities` and `GSV-Cities-light` with a single command to start your experiments immediately.
