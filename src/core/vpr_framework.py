@@ -83,7 +83,7 @@ class VPRFramework(L.LightningModule):
             List of optimizers and schedulers that will be used by the Lightning trainer.
         """
         optimizer_params = [
-            {"params": self.backbone.parameters(), "lr": self.lr * 0.1, "weight_decay": self.weight_decay},
+            {"params": self.backbone.parameters(), "lr": self.lr, "weight_decay": self.weight_decay},
             {"params": self.aggregator.parameters(), "lr": self.lr, "weight_decay": self.weight_decay},
         ]
         

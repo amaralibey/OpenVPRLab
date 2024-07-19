@@ -32,7 +32,7 @@ backbone:
   params:
     backbone_name: "resnet18"  # name of the resnet backbone (see ResNet.AVAILABLE_MODELS)
     pretrained: true
-    num_unfrozen_blocks: 1
+    num_unfrozen_blocks: 2
     crop_last_block: true
   
   # Example of DinoV2
@@ -74,11 +74,11 @@ trainer:
   optimizer: adamw
   lr: 0.0002      # learning rate
   wd: 0.001       # weight decay
-  warmup: 1950    # linear warmup steps
+  warmup: 1500    # linear warmup steps
   max_epochs: 40
   milestones:
     - 5
     - 10
     - 20
     - 30
-  lr_mult: 0.1 # learning rate multiplier at each milestone
+  lr_mult: 0.25 # learning rate multiplier at each milestone
