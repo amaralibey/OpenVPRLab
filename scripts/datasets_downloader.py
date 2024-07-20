@@ -15,7 +15,8 @@ from rich import print as rprint
 from rich.panel import Panel
 from rich.text import Text
 from rich.table import Table
-from rich import box
+from rich.live import Live
+
 import yaml
 
 
@@ -86,27 +87,52 @@ def choose_dataset() -> Tuple[str, List[str]]:
 
 
 
+# def execute_script(script_path: str, dataset_name: str, dataset_type: str) -> None:
+#     """Execute the chosen .sh script and update config if successful."""
+#     try:
+#         result = subprocess.run(['bash', script_path], check=True, capture_output=True, text=True)
+#         console.print(f"Successfully executed {script_path}", style="bold green")
+#         if result.stdout:
+#             console.print("Output:", style="dim")
+#             console.print(result.stdout)
+
+#         # downloaded datasets are stored in the folder data/ in the project root
+#         dataset_path = Path(__file__).parent.parent / "data" / dataset_type / dataset_name
+#         update_config_yaml(dataset_name, dataset_type, dataset_path)
+        
+#     except subprocess.CalledProcessError as e:
+#         console.print(f"\nAn error occurred while executing {script_path}:", style="bold red")
+#         if e.stdout:
+#             console.print("Standard output:", style="dim")
+#             console.print(e.stdout)
+#         if e.stderr:
+#             console.print("Error output:", style="dim")
+#             console.print(e.stderr)
+
+
 def execute_script(script_path: str, dataset_name: str, dataset_type: str) -> None:
     """Execute the chosen .sh script and update config if successful."""
     try:
-        result = subprocess.run(['bash', script_path], check=True, capture_output=True, text=True)
-        console.print(f"Successfully executed {script_path}", style="bold green")
-        if result.stdout:
-            console.print("Output:", style="dim")
-            console.print(result.stdout)
-
-        # downloaded datasets are stored in the folder data/ in the project root
-        dataset_path = Path(__file__).parent.parent / "data" / dataset_type / dataset_name
-        update_config_yaml(dataset_name, dataset_type, dataset_path)
+        process = subprocess.Popen(['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, universal_newlines=True)
         
-    except subprocess.CalledProcessError as e:
-        console.print(f"\nAn error occurred while executing {script_path}:", style="bold red")
-        if e.stdout:
-            console.print("Standard output:", style="dim")
-            console.print(e.stdout)
-        if e.stderr:
-            console.print("Error output:", style="dim")
-            console.print(e.stderr)
+        with Live(auto_refresh=False) as live:
+            for line in iter(process.stdout.readline, ''):
+                live.update(Panel(line.strip()))
+                live.refresh()
+
+        return_code = process.wait()
+        
+        if return_code == 0:
+            console.print(f"Successfully executed {script_path}", style="bold green")
+            
+            # downloaded datasets are stored in the folder data/ in the project root
+            dataset_path = Path(__file__).parent.parent / "data" / dataset_type / dataset_name
+            update_config_yaml(dataset_name, dataset_type, dataset_path)
+        else:
+            console.print(f"\nAn error occurred while executing {script_path}:", style="bold red")
+            
+    except Exception as e:
+        console.print(f"\nAn error occurred: {str(e)}", style="bold red")
 
 
 def update_config_yaml(dataset_name: str, dataset_type: str, dataset_path: str) -> None:
