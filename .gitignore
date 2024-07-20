@@ -26,4 +26,4 @@ logs/
 .cache/
 
 # Ignore the data config file changes
-config/data/config.yaml 
+# config/data/config.yaml 
