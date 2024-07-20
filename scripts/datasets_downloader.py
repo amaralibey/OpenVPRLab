@@ -37,12 +37,12 @@ def print_available_datasets() -> None:
     console.print("\nWelcome to OpenVPRLab Datasets Downloader!\n", style="bold green")
     
     table = Table.grid(expand=False)
-    table.add_column("Number", min_width=5, justify="center")
+    table.add_column("Number", min_width=5, justify="left")
     table.add_column("Dataset", min_width=25)
     table.add_column("Type")
     table.add_column("Size", justify="right", min_width=10)
 
-    table.add_row("", "Dataset", "Type", "Size", style="italic red")
+    table.add_row("", "Dataset", "Type", "Size", style="italic green")
     # table.add_row("", "----------------", "----", "----", style="bold green")
     for i, item in enumerate(AVAILABLE_DATASETS.items(), 1):
         dataset, (_, size, type) = item
@@ -55,10 +55,9 @@ def print_available_datasets() -> None:
         table,
         title="Available Datasets to Download",
         border_style="bold",
-        padding=(1, 1)
+        padding=(1, 2),
     )
-    # console.print(panel)
-    console.print(table)
+    console.print(panel)
 
 
 def sum_dataset_sizes() -> str:
