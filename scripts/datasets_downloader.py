@@ -86,53 +86,24 @@ def choose_dataset() -> Tuple[str, List[str]]:
             console.print("Invalid input. Please enter a number.", style="bold red")
 
 
-
-# def execute_script(script_path: str, dataset_name: str, dataset_type: str) -> None:
-#     """Execute the chosen .sh script and update config if successful."""
-#     try:
-#         result = subprocess.run(['bash', script_path], check=True, capture_output=True, text=True)
-#         console.print(f"Successfully executed {script_path}", style="bold green")
-#         if result.stdout:
-#             console.print("Output:", style="dim")
-#             console.print(result.stdout)
-
-#         # downloaded datasets are stored in the folder data/ in the project root
-#         dataset_path = Path(__file__).parent.parent / "data" / dataset_type / dataset_name
-#         update_config_yaml(dataset_name, dataset_type, dataset_path)
-        
-#     except subprocess.CalledProcessError as e:
-#         console.print(f"\nAn error occurred while executing {script_path}:", style="bold red")
-#         if e.stdout:
-#             console.print("Standard output:", style="dim")
-#             console.print(e.stdout)
-#         if e.stderr:
-#             console.print("Error output:", style="dim")
-#             console.print(e.stderr)
-
-
 def execute_script(script_path: str, dataset_name: str, dataset_type: str) -> None:
-    """Execute the chosen .sh script and update config if successful."""
+    """Execute the chosen .sh script using subprocess.call. Then update the config file with the dataset path."""
     try:
-        process = subprocess.Popen(['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, universal_newlines=True)
-        
-        with Live(auto_refresh=False) as live:
-            for line in iter(process.stdout.readline, ''):
-                live.update(Panel(line.strip()))
-                live.refresh()
-
-        return_code = process.wait()
+        # Run the bash script and capture its return code
+        return_code = subprocess.call(['bash', script_path])
         
         if return_code == 0:
-            console.print(f"Successfully executed {script_path}", style="bold green")
+            print(f"\nSuccessfully downloaded {dataset_name}")
             
             # downloaded datasets are stored in the folder data/ in the project root
             dataset_path = Path(__file__).parent.parent / "data" / dataset_type / dataset_name
             update_config_yaml(dataset_name, dataset_type, dataset_path)
         else:
-            console.print(f"\nAn error occurred while executing {script_path}:", style="bold red")
+            print(f"\nAn error occurred while downloading {dataset_name}")
             
     except Exception as e:
-        console.print(f"\nAn error occurred: {str(e)}", style="bold red")
+        print(f"\nAn error occurred: {str(e)}")
+
 
 
 def update_config_yaml(dataset_name: str, dataset_type: str, dataset_path: str) -> None:
