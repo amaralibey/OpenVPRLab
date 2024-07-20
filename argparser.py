@@ -26,6 +26,7 @@ def parse_args() -> Dict[str, Any]:
     parser.add_argument('--train_set', type=str, help='Name of the training dataset')
     parser.add_argument('--val_sets', nargs='+', help='Names of the validation datasets')
     parser.add_argument('--train_image_size', type=int, nargs=2, help='Training image size (height width)')
+    parser.add_argument('--val_image_size', type=int, nargs=2, help='Validation image size (height width). Dafault is None (same as training size)')
     parser.add_argument('--batch_size', type=int, help='Batch size')
     parser.add_argument('--img_per_place', type=int, help='Number of images per place')
     parser.add_argument('--num_workers', type=int, help='Number of data loading workers')
@@ -80,6 +81,7 @@ def update_config_with_args_and_defaults(config: Dict[str, Any], args: argparse.
             'cities': "all",
             'val_set_names': ["msls-val"],
             'train_image_size': [320, 320],
+            'val_image_size': None,
             'batch_size': 60,
             'img_per_place': 4,
             'num_workers': 8,
@@ -132,6 +134,8 @@ def update_config_with_args_and_defaults(config: Dict[str, Any], args: argparse.
         config['datamodule']['val_set_names'] = arg_dict['val_sets']
     if arg_dict['train_image_size'] is not None:
         config['datamodule']['train_image_size'] = arg_dict['train_image_size']
+    if arg_dict['val_image_size'] is not None:
+        config['datamodule']['val_image_size'] = arg_dict['val_image_size']
     if arg_dict['batch_size'] is not None:
         config['datamodule']['batch_size'] = arg_dict['batch_size']
     if arg_dict['img_per_place'] is not None:

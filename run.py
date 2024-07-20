@@ -83,7 +83,7 @@ def train(config):
         batch_sampler=None,
         mean_std=IMAGENET_MEAN_STD,
         val_set_names=config['datamodule']['val_set_names'],
-        val_image_size=None, # if None, the same as train_image_size
+        val_image_size=config['datamodule']['val_image_size'], # if None, the same as train_image_size
     )
 
 
