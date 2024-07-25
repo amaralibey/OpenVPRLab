@@ -1,5 +1,5 @@
 """
-    Fine-tuning CNN Image Retrieval with No Human Annotation
+    Optimal Transport Aggregation for Visual Place Recognition
     
     Paper: https://arxiv.org/abs/2311.15937
     Code repo: https://github.com/serizba/salad
